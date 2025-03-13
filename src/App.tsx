@@ -412,7 +412,7 @@ function App() {
             </div>
           </div>
           <div className="border-t border-zinc-800 mt-12 pt-8 text-center">
-            <p>&copy; 2024 WF Holding. Todos os direitos reservados.</p>
+            <p>&copy; 2025 WF Holding. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
