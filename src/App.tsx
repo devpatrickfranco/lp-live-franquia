@@ -12,6 +12,8 @@ type FormData = {
 function App() {
 
   const navigate = useNavigate();
+  const [errors, setErrors] = useState<{ name?: string; email?: string; whatsapp?: string }>({});
+  const whatsappRegex = /^\d{11}$/;
 
   const [formData, setFormData] = useState<FormData>({ name: "", email: "", whatsapp: "" });
 
@@ -25,27 +27,43 @@ function App() {
     });
   };
 
-  // Função para enviar os dados do formulário ao webhook
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Envia os dados para o webhook
+  
+    const newErrors: { name?: string; email?: string; whatsapp?: string } = {};
+  
+    // Validação dos campos
+    if (!formData.name) newErrors.name = "Nome é obrigatório.";
+    if (!formData.email) newErrors.email = "E-mail é obrigatório.";
+    if (!formData.whatsapp) newErrors.whatsapp = "WhatsApp é obrigatório.";
+  
+    // Regex para validar o WhatsApp
+    const whatsappRegex = /^\d+$/;
+    if (formData.whatsapp && !whatsappRegex.test(formData.whatsapp)) {
+      newErrors.whatsapp = "Por favor, insira um número de WhatsApp válido (apenas números).";
+    }
+  
+    // Se houver erros, exiba-os
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+  
+    // Se não houver erros, prossiga
     try {
       const response = await fetch("https://n8n-n8n.i4khe5.easypanel.host/webhook/5b4ac6dd-592b-4181-832e-3afa3a89e589", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData), // Enviando os dados como JSON
+        body: JSON.stringify(formData),
       });
-
-      // Verifica se a requisição foi bem-sucedida
+  
       if (!response.ok) {
         throw new Error("Erro ao enviar dados para o webhook");
       }
-
-      navigate("/obrigado"); // Navega para a página de agradecimento
-      
+  
+      navigate("/obrigado");
     } catch (error) {
       console.error("Erro ao enviar dados para o webhook", error);
     }
@@ -291,28 +309,40 @@ function App() {
               Inscreva-se agora e transforme sua clínica em uma máquina de faturamento!
             </p>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                type="text"
-                placeholder="Seu Nome"
-                className="w-full px-4 py-3 rounded-lg bg-black border border-zinc-800 text-white placeholder-gray-400"
-              />
-              <input
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                type="email"
-                placeholder="Seu E-mail"
-                className="w-full px-4 py-3 rounded-lg bg-black border border-zinc-800 text-white placeholder-gray-400"
-              />
-              <input
-                value={formData.whatsapp}
-                onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                type="tel"
-                placeholder="Seu WhatsApp"
-                className="w-full px-4 py-3 rounded-lg bg-black border border-zinc-800 text-white placeholder-gray-400"
-              />
-              <button type="submit" className="w-full bg-[#75df9d] text-black px-8 py-4 rounded-lg text-lg font-semibold flex items-center justify-center hover:bg-[#67c78b] transition-colors" >
+              <div>
+                <input
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  type="text"
+                  placeholder="Seu Nome"
+                  className="w-full px-4 py-3 rounded-lg bg-black border border-zinc-800 text-white placeholder-gray-400"
+                />
+                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+              </div>
+              <div>
+                <input
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  type="email"
+                  placeholder="Seu E-mail"
+                  className="w-full px-4 py-3 rounded-lg bg-black border border-zinc-800 text-white placeholder-gray-400"
+                />
+                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+              </div>
+              <div>
+                <input
+                  required
+                  value={formData.whatsapp}
+                  onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                  type="tel"
+                  placeholder="Seu WhatsApp"
+                  className="w-full px-4 py-3 rounded-lg bg-black border border-zinc-800 text-white placeholder-gray-400"
+                />
+                {errors.whatsapp && <p className="text-red-500 text-sm mt-1">{errors.whatsapp}</p>}
+              </div>
+              <button type="submit" className="w-full bg-[#75df9d] text-black px-8 py-4 rounded-lg text-lg font-semibold flex items-center justify-center hover:bg-[#67c78b] transition-colors">
                 🔴 QUERO PARTICIPAR DA LIVE!
                 <ArrowRight className="ml-2" />
               </button>
