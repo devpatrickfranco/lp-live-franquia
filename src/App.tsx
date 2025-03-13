@@ -130,8 +130,8 @@ function App() {
             O Mercado Estético Nunca Esteve Tão Competitivo!
           </h2>
           <p className="text-xl text-gray-300 text-center max-w-4xl mx-auto mb-12">
-            Se você é um profissional da área da saúde - Biomédica, Dentista, Médica, Dermatologista, 
-            Fisioterapeuta, Farmacêutica Esteta ou Enfermeira Esteta - e deseja DUPLICAR O FATURAMENTO 
+            Se você é um profissional da área da saúde - Biomédico(a), Dentista, Médico(a), Dermatologista, 
+            Fisioterapeuta, Farmacêutico(a) Esteta ou Enfermeiro(a) Esteta - e deseja DUPLICAR O FATURAMENTO 
             da sua clínica em apenas 90 dias, esta live é para você!
           </p>
         </div>
@@ -178,9 +178,9 @@ function App() {
       <div className="w-full flex justify-center bg-black py-6">
         <div className="w-full bg-[#75df9d] text-black font-bold py-2 overflow-hidden whitespace-nowrap rounded-lg shadow-lg">
           <div className="animate-marquee flex space-x-8 min-w-full">
-            <span className="mx-4">GARANTA SUA VAGA • DIA 13/03 ÀS 19H</span>
-            <span className="mx-4">GARANTA SUA VAGA • DIA 13/03 ÀS 19H</span>
-            <span className="mx-4">GARANTA SUA VAGA • DIA 13/03 ÀS 19H</span>
+            <span className="mx-4">GARANTA SUA VAGA • DIA 21/03 ÀS 12H</span>
+            <span className="mx-4">GARANTA SUA VAGA • DIA 21/03 ÀS 12H</span>
+            <span className="mx-4">GARANTA SUA VAGA • DIA 21/03 ÀS 12H</span>
           </div>
         </div>
       </div>
