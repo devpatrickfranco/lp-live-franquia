@@ -12,8 +12,30 @@ type FormData = {
 function App() {
 
   const navigate = useNavigate();
+
+  const formatWhatsApp = (value: string) => {
+    // Remove todos os caracteres não numéricos
+    const cleanedValue = value.replace(/\D/g, "");
+  
+    // Limita o número de dígitos a 13
+    const limitedValue = cleanedValue.slice(0, 13);
+  
+    // Aplica a formatação
+    let formattedValue = "";
+    if (limitedValue.length > 0) {
+      formattedValue += `(${limitedValue.slice(0, 2)}`; // DDD
+    }
+    if (limitedValue.length > 2) {
+      formattedValue += `) ${limitedValue.slice(2, 7)}`; // Primeiros 5 dígitos
+    }
+    if (limitedValue.length > 7) {
+      formattedValue += `-${limitedValue.slice(7, 11)}`; // Últimos 4 dígitos
+    }
+  
+    return formattedValue;
+  };
+
   const [errors, setErrors] = useState<{ name?: string; email?: string; whatsapp?: string }>({});
-  const whatsappRegex = /^\d{11}$/;
 
   const [formData, setFormData] = useState<FormData>({ name: "", email: "", whatsapp: "" });
 
@@ -30,33 +52,30 @@ function App() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
-    const newErrors: { name?: string; email?: string; whatsapp?: string } = {};
+    // Remove a formatação do WhatsApp
+    const cleanedWhatsapp = formData.whatsapp.replace(/\D/g, "");
   
     // Validação dos campos
-    if (!formData.name) newErrors.name = "Nome é obrigatório.";
-    if (!formData.email) newErrors.email = "E-mail é obrigatório.";
-    if (!formData.whatsapp) newErrors.whatsapp = "WhatsApp é obrigatório.";
-  
-    // Regex para validar o WhatsApp
-    const whatsappRegex = /^\d+$/;
-    if (formData.whatsapp && !whatsappRegex.test(formData.whatsapp)) {
-      newErrors.whatsapp = "Por favor, insira um número de WhatsApp válido (apenas números).";
-    }
-  
-    // Se houver erros, exiba-os
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    if (!formData.name || !formData.email || !cleanedWhatsapp) {
+      alert("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
   
-    // Se não houver erros, prossiga
+    // Regex para validar o WhatsApp (apenas números)
+    const whatsappRegex = /^\d{10,11}$/; // 10 ou 11 dígitos (sem DDD ou com DDD)
+    if (!whatsappRegex.test(cleanedWhatsapp)) {
+      alert("Por favor, insira um número de WhatsApp válido.");
+      return;
+    }
+  
+    // Envia os dados para o webhook
     try {
       const response = await fetch("https://n8n-n8n.i4khe5.easypanel.host/webhook/5b4ac6dd-592b-4181-832e-3afa3a89e589", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, whatsapp: cleanedWhatsapp }), // Envia o número sem formatação
       });
   
       if (!response.ok) {
@@ -332,14 +351,18 @@ function App() {
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
               <div>
-                <input
-                  required
-                  value={formData.whatsapp}
-                  onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                  type="tel"
-                  placeholder="Seu WhatsApp"
-                  className="w-full px-4 py-3 rounded-lg bg-black border border-zinc-800 text-white placeholder-gray-400"
-                />
+              <input
+                required
+                value={formData.whatsapp}
+                onChange={(e) => {
+                  const formattedValue = formatWhatsApp(e.target.value);
+                  setFormData({ ...formData, whatsapp: formattedValue });
+                }}
+                type="tel"
+                placeholder="Seu WhatsApp"
+                className="w-full px-4 py-3 rounded-lg bg-black border border-zinc-800 text-white placeholder-gray-400"
+                maxLength={15} // Limite máximo de caracteres (incluindo parênteses, espaços e hífen)
+              />
                 {errors.whatsapp && <p className="text-red-500 text-sm mt-1">{errors.whatsapp}</p>}
               </div>
               <button type="submit" className="w-full bg-[#75df9d] text-black px-8 py-4 rounded-lg text-lg font-semibold flex items-center justify-center hover:bg-[#67c78b] transition-colors">
