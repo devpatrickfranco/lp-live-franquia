@@ -193,9 +193,9 @@ function App() {
       <div className="w-full flex justify-center bg-black py-6">
         <div className="w-full bg-[#75df9d] text-black font-bold py-2 overflow-hidden whitespace-nowrap rounded-lg shadow-lg">
           <div className="animate-marquee flex space-x-8 min-w-full">
-            <span className="mx-4">GARANTA SUA VAGA • DIA 31/03 ÀS 12H</span>
-            <span className="mx-4">GARANTA SUA VAGA • DIA 31/03 ÀS 12H</span>
-            <span className="mx-4">GARANTA SUA VAGA • DIA 31/03 ÀS 12H</span>
+            <span className="mx-4">GARANTA SUA VAGA • DIA 31/03 ÀS 19H</span>
+            <span className="mx-4">GARANTA SUA VAGA • DIA 31/03 ÀS 19H</span>
+            <span className="mx-4">GARANTA SUA VAGA • DIA 31/03 ÀS 19H</span>
           </div>
         </div>
       </div>
